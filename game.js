@@ -1,3 +1,79 @@
+// Определение мобильного устройства
+const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+// Мобильное управление
+let joystickActive = false;
+let joystickBaseX = 0;
+let joystickBaseY = 0;
+let joystickMoveX = 0;
+
+function initMobileControls() {
+    if (!isMobile) return;
+    
+    const joystickArea = document.getElementById('joystick-area');
+    const joystickThumb = document.querySelector('.joystick-thumb');
+    const shootBtn = document.getElementById('mobile-shoot');
+    
+    // Джойстик - начало касания
+    joystickArea.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const rect = joystickArea.getBoundingClientRect();
+        joystickBaseX = rect.left + rect.width/2;
+        joystickBaseY = rect.top + rect.height/2;
+        joystickActive = true;
+        updateJoystick(e.touches[0].clientX, e.touches[0].clientY);
+    }, {passive: false});
+    
+    // Джойстик - движение
+    document.addEventListener('touchmove', (e) => {
+        if (!joystickActive) return;
+        e.preventDefault();
+        updateJoystick(e.touches[0].clientX, e.touches[0].clientY);
+    }, {passive: false});
+    
+    // Джойстик - окончание
+    document.addEventListener('touchend', () => {
+        joystickActive = false;
+        joystickThumb.style.transform = 'translate(0, 0)';
+    }, {passive: true});
+    
+    // Кнопка стрельбы
+    shootBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        fireBullet();
+    }, {passive: false});
+    
+    function updateJoystick(touchX, touchY) {
+        const dx = touchX - joystickBaseX;
+        const dy = touchY - joystickBaseY;
+        const distance = Math.sqrt(dx*dx + dy*dy);
+        const maxDistance = 35;
+        
+        if (distance > maxDistance) {
+            const angle = Math.atan2(dy, dx);
+            joystickMoveX = Math.cos(angle) * maxDistance;
+            const moveY = Math.sin(angle) * maxDistance;
+            joystickThumb.style.transform = `translate(${joystickMoveX}px, ${moveY}px)`;
+        } else {
+            joystickMoveX = dx;
+            joystickThumb.style.transform = `translate(${dx}px, ${dy}px)`;
+        }
+        
+        // Движение игрока
+        playerX = Math.max(30, Math.min(window.innerWidth - 30, playerX + joystickMoveX * 0.5));
+        player.style.left = playerX + 'px';
+    }
+}
+
+// Инициализация при загрузке
+window.addEventListener('DOMContentLoaded', function() {
+    initMobileControls();
+    
+    // Для iOS - активация звуков
+    document.addEventListener('touchstart', function() {
+        // Пустая функция для активации аудио
+    }, { once: true });
+});
 // Игровые элементы
 const player = document.getElementById('player');
 const gameContainer = document.getElementById('game-container');
