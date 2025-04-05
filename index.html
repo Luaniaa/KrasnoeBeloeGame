@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Космический защитник</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="start-screen">
+            <h1>Космический защитник</h1>
+            <button id="start-btn">Играть</button>
+           </div> 
+        <div id="player"></div>
+        <div id="score">Очки: 0</div>
+        <div id="health">❤️❤️❤️</div>
+        <div id="game-over">
+            <h2>Игра окончена!</h2>
+            <p>Ваш счет: <span id="final-score">0</span></p>
+            <button id="restart">Играть снова</button>
+        </div>
+    </div>
+    <audio id="laser-sound" src="assets/laser.wav"></audio>
+    <audio id="explosion-sound" src="assets/explosion.wav"></audio>
+    <audio id="beer-sound" scr="assets/beer.wav"></audio>
+    <script src="game.js"></script>
+</body>
+</html>
